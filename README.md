@@ -5,11 +5,11 @@ The ORB-SLAM learning Notes
 
 ### 1.1 ORB-SLAM贡献及系统框架
 
-![System](.\MarkdownPhoto\System.png)
+![System](https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/System.png)
 
 ORB-SLAM主要分为Tracking, LocalMapping和LoopClosure三个线程进行，三个线程分别放在三个文件中:Tracking.cpp, LocalMapping.cpp和LoopClosing.cpp。论文框架如下图所示：
 
-![Architecture](.\MarkdownPhoto\Architecture.png)
+![Architecture](https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Architecture.png)
 
 ### 1.2 Tracking线程
 
