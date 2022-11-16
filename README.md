@@ -53,7 +53,7 @@ s: set类型变量
 
 系统流程图如下所示：
 
-![Procedure](https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Procedure.png")
+![Procedure](https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Procedure.png)
 
 ### 2.1 主线程
 
