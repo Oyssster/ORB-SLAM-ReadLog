@@ -57,8 +57,6 @@ s: set类型变量
 <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Procedure.png" >
 </div>
 
-![Procedure](https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Procedure.png)
-
 ### 2.1 主线程
 
 ~~~C++
@@ -95,7 +93,30 @@ ORB特征点提取原理：
 
    <font color = red>为了避免特征点扎堆</font>，在提取特征点时进行非极大值抑制（Non-maximal suppression），即在一小块区域内，只取最大Harris响应值的前$N$个。
 
+   <font color = red>当前FAST关键点提取已经完成，但OBR特征点提取的是Oriented FAST，</font>即加入了方向信息。具体操作步骤如下：
+
+   1. 在一个小的图像块$B$中，定义图像块的矩为：
+      $$
+      m_{pq} = \sum_{x,y \in B} x^py^qI(x,y), \quad p,q = \{0,1\}
+      $$
+
+   2. 通过矩找到图像块的质心：
+      $$
+      C = (\frac{m_{10}}{m_{00}}, \frac{m_{01}}{m_{00}})
+      $$
+
+   3. 连接图像块的几何中心$O$与质心$C$，得到一个方向向量$\vec{OC}$，则特征点的方向可以定义为：
+      $$
+      \theta = arctan(\frac{m_{01}}{m_{10}})
+      $$
+
+   4. 至此，完成了ORB特征点的提取。
+
 2. 计算BRIEF描述子
+
+   Brief描述子是一种二进制描述子，共256bit，即32个字节的长度。每位bit为0或1，根据一定的点对选取规则选取点对，选取规则使点对与点对之间的相关性最低<font color = red>（点对与点对之间尽量垂直）</font>，并判断该点对两个像素点的灰度值大小（比如$p$和$q$的关系，$p \geq q$则取1，否则取0）。
+
+   ![Architecture](https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/BriefDescriptor.png)
 
 #### 2.2.1 New Keyframe Decision
 
