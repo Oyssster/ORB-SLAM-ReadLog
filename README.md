@@ -120,6 +120,18 @@ ORB特征点提取原理：
    <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/BriefDescriptor.png" >
    </div>
 
+3. 构建图像金字塔
+
+   Oriented FAST和BRIEF都是基于图像金字塔进行计算，所以何为图像金字塔？通过人为的构造不同尺度的图像，来模拟不同距离下观看同一事物的结果，这就是图像金字塔。如果在进行尺度变换之前图像有进行过高斯模糊，即用高斯核进行卷积，则成为高斯图像金字塔。
+
+   OpenCV库中，pyrDown、pyrUp和resize都可以达到缩放图像的目的，区别是前者是先高斯模糊然后采样，后者通过插值的方式实现，orbslam2使用插值方法进行。 
+
+   <div align=center>
+   <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Pyramid.png" >
+   </div>
+   
+   假设一张8×6的图片,尺度因子scale为2,意味着把原图像的width和hight缩小为原来的$ \dfrac{1}{2} $，整张图片将缩放为原来的$\dfrac{1}{4}$。如上图所示,把图片中有颜色的行和列从图片矩阵中删除掉，剩下的行和列组成一张新的图片，这不就是变成$\dfrac{1}{4}$。图像金字塔构建的层数可以由自己设定，orbslam2中的level为8层，其中第0层即为原图像，层数越高图片越小，越模糊，第$n$层为原图像大小的$\dfrac{1}{scale^n}$。
+
 #### 2.2.1 New Keyframe Decision
 
 1. 距离上一次全局重定位超过20帧：保证当前帧足够稳定；
