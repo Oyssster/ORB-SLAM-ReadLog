@@ -116,7 +116,9 @@ ORB特征点提取原理：
 
    Brief描述子是一种二进制描述子，共256bit，即32个字节的长度。每位bit为0或1，根据一定的点对选取规则选取点对，选取规则使点对与点对之间的相关性最低<font color = red>（点对与点对之间尽量垂直）</font>，并判断该点对两个像素点的灰度值大小（比如$p$和$q$的关系，$p \geq q$则取1，否则取0）。
 
-   ![Architecture](https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/BriefDescriptor.png)
+   <div align=center>
+   <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/BriefDescriptor.png" >
+   </div>
 
 #### 2.2.1 New Keyframe Decision
 
