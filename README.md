@@ -146,8 +146,51 @@ ORB特征点提取原理：
    5. 将每个节点的最大Harris响应值存入vResultKeys向量并返回;
    6. 计算每个关键点的方向;
    7. 至此，FAST关键点提取完成!!!!!!
-   8. 传入一个bit_pattern_31_，该数组共512字节，256组点对，通过判断点对的像素关系决定0还是1;
+   8. 计算BRIEF描述子: 传入一个bit_pattern_31_，该数组共512字节，256组点对，通过判断点对的像素关系决定0还是1;
    ~~~
+
+前端跟踪：
+
+1. 相关理论知识
+
+   <div align=center>
+   <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Triangle.png" >
+   </div>
+
+   $l_1, l_2$称为极线；$O_1 - O_2$称为基线；$O_1-O_2-P$为极平面。投影在平面$I_1$上的点$p_1$有无数个可能的点$P$，都在射线$O_1P$上。点$p_1$经过旋转变换投影到平面$I_2$上的点$p_2$可能位于极线$l_2$上的任意一点，这就是所谓的对极约束。通过特征匹配我们知道点$p_2$的准确位置，所以反过来通过三角测量以及最小化重投影误差来求解点$P$的位置以及$I_1, I_2$之间的变换。
+
+   因此，特征点匹配的准确性至关重要！
+
+   设$x_1, x_2$是两个像素点的归一化平面坐标，从$I_1$到$I_2$的旋转矩阵为$T=[R|t]$，可得：
+   $$
+   x_2 = Rx_1 + t
+   $$
+   上式同时左乘$t^{\Lambda}$得：
+   $$
+   t^{\Lambda}x_2 = t^{\Lambda}Rx_1
+   $$
+   $t^{\Lambda}x_2$是一个与$t$和$x_2$都垂直的向量，再与$x_2$内积则等式左边为0。因此得到如下公式：
+   $$
+   x_2^{T}t^{\Lambda}Rx_1 = 0 \label{EpipolarConstrain1}
+   $$
+   重新带入$p_1, p_2$得：
+   $$
+   p_2^TK^{-T}t^{\Lambda}RK^{-1}p_1 = 0 \label{EpipolarConstrain2}
+   $$
+   公式($\ref{EpipolarConstrain1}$)和公式($\ref{EpipolarConstrain2}$)称为**对极约束**，几何意义是$O_1,P,O_2$三者共面。对极约束中同时包含了旋转和平移，中间部分记作两个矩阵：基础矩阵(Fundamental Matrix)$F$和本质矩阵(Essential Matrix)$E$，可以进一步简化对极约束：
+   $$
+   E = t^{\Lambda}R, \quad F = K^{-T}EK^{-1}, \quad x_2^{T}Ex_1 = p_2^{T}Fp_1 = 0
+   $$
+   对极约束简洁的给出了两个匹配点的空间位置关系，相机位姿估计问题可以简化为以下两步：
+
+   1. 根据匹配点的像素位置求出$E$或者$F$；
+   2. 根据$E$或者$F$，求出$R, t$；
+
+   $E$和$F$仅仅相差相机内参$K$，在SLAM系统中是已知的，在实践中往往使用形式更简单的$E$。
+
+   
+
+   
 
 #### 2.2.1 New Keyframe Decision
 
