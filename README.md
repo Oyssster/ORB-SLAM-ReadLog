@@ -130,7 +130,7 @@ ORB特征点提取原理：
    <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Pyramid.png" >
    </div>
    
-   假设一张8×6的图片,尺度因子scale为2,意味着把原图像的width和hight缩小为原来的$ \dfrac{1}{2} $，整张图片将缩放为原来的$\dfrac{1}{4}$。如上图所示,把图片中有颜色的行和列从图片矩阵中删除掉，剩下的行和列组成一张新的图片，这不就是变成$\dfrac{1}{4}$。图像金字塔构建的层数可以由自己设定，orbslam2中的level为8层，其中第0层即为原图像，层数越高图片越小，越模糊，第$n$层为原图像大小的$\dfrac{1}{scale^n}$。
+   假设一张8×6的图片,尺度因子scale为2,意味着把原图像的width和hight缩小为原来的$ \frac{1}{2} $，整张图片将缩放为原来的$\frac{1}{4}$。如上图所示,把图片中有颜色的行和列从图片矩阵中删除掉，剩下的行和列组成一张新的图片，这不就是变成$\frac{1}{4}$。图像金字塔构建的层数可以由自己设定，orbslam2中的level为8层，其中第0层即为原图像，层数越高图片越小，越模糊，第$n$层为原图像大小的$\frac{1}{scale^n}$。
 
 #### 2.2.1 New Keyframe Decision
 
