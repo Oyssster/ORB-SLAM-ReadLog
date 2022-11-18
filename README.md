@@ -130,7 +130,26 @@ ORB特征点提取原理：
    <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/Pyramid.png" >
    </div>
    
-   假设一张8×6的图片,尺度因子scale为2,意味着把原图像的width和hight缩小为原来的$ \frac{1}{2} $，整张图片将缩放为原来的$\frac{1}{4}$。如上图所示,把图片中有颜色的行和列从图片矩阵中删除掉，剩下的行和列组成一张新的图片，这不就是变成$\frac{1}{4}$。图像金字塔构建的层数可以由自己设定，orbslam2中的level为8层，其中第0层即为原图像，层数越高图片越小，越模糊，第$n$层为原图像大小的$\frac{1}{scale^n}$。
+   假设一张$8×6$的图片,尺度因子scale为2,意味着把原图像的width和hight缩小为原来的$ \frac{1}{2}$，整张图片将缩放为原来的$\frac{1}{4}$。如上图所示,把图片中有颜色的行和列从图片矩阵中删除掉，剩下的行和列组成一张新的图片，这不就是变成$\frac{1}{4}$。图像金字塔构建的层数可以由自己设定，orbslam2中的level为8层，其中第0层即为原图像，层数越高图片越小，越模糊，第$n$层为原图像大小的$\frac{1}{scale^n}$。
+   
+4. ORB特征点提取流程
+
+   <div align=center>
+   <img src="https://github.com/Oyssster/ORB-SLAM-ReadLog/blob/main/MarkdownPhoto/KeypointsExtraction.png" >
+   </div>
+
+   ~~~markdown
+   1. 首先将图片循环调用resize()函数，利用上一层的mvImagePyramind[level - 1]构建下一层的mvImagePyramid[level];
+   2. 将一张图片分成30X30大小网格，在每个网格中提取关键点，提取过程中采用了非极大值抑制的方法;
+   3. 该层图片提取完关键点后，用四叉树进行存储，然后在四叉树的每个节点筛选出最高质量关键点，并存储到keypoints向量中;（此时的关键点从不包含边缘的坐标变为包含边缘的坐标）
+   4. 四叉树是将网格进行四等分，直至该节点只有一个关键点或者图片提取的关键点数量已经满足的要求，则停止树的生长。
+   5. 将每个节点的最大Harris响应值存入vResultKeys向量并返回;
+   6. 计算每个关键点的方向;
+   7. 至此，FAST关键点提取完成!!!!!!
+   8. 传入一个bit_pattern_31_，_该数组共512字节，256组点对，通过判断点对的像素关系决定0还是1;
+   ~~~
+
+   
 
 #### 2.2.1 New Keyframe Decision
 
